@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  body {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  nav {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+  }
+  nav a {
+    border: 1px solid black;
+    border-radius: 0.5em;
+    padding: 1em;
+    color: white;
+    background: black;
+    text-decoration: none;
+  }
+  nav a:hover {
+    background-color: orange;
+  }
+  nav a:not(:first-child) {
+    margin-top: 1em;
+  }
+  * {
+    font-family: 'Fira Code', Courier, monospace;
+  }
+  h1, h2, h3 {
+    text-align: center;
+    margin: 0.25em;
+  }
+</style>
+<body>
+  <nav>
+    <h1>The naked web developer: Your browser is your framework</h1>
+    <h3>A session by Avichay Eyal</h3>
+    <h3>@eavichay</h3>
+    <a href="./demos/1-messaging.html" target="_blank">Feature #1: Messaging</a>
+    <a href="./demos/2-state.html" target="_blank">Feature #2: State Management</a>
+    <a href="./demos/3-depinj.html" target="_blank">Feature #3: Dependency Injection</a>
+    <a href="./demos/4-components.html" target="_blank">Feature #4: Components</a>
+    <a href="./demos/5-routing.html" target="_blank">Feature #5: Routing</a>
+    <a href="./demos/6-environment.html" target="_blank">Feature #6: Enivornment Variables</a>
+  </nav>
+</body>
+</html>
