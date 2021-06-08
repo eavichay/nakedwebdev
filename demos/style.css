@@ -1,0 +1,15 @@
+html {
+  height: 100vh;
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+#counter {
+  padding: 2em;
+}
+#reset {
+  margin-left: 2em;
+}

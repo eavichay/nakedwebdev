@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>nakedWebDev: Messaging</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <button id="dec2">-2</button>
+  <button id="dec1">-1</button>
+  <span id="counter">0</span>
+  <button id="inc1">+1</button>
+  <button id="inc2">+2</button>
+  <button id="reset">RESET</button>
+
+  <script type="module">
+    import {eventBus} from '../modules/messaging.js';
+
+    function app() {
+      const bus = eventBus();
+      let count = 0;
+      const $ = document.querySelector.bind(document);
+      $('#dec2').onclick = () => bus.emit('count', -2);
+      $('#dec1').onclick = () => bus.emit('count', -1);
+      $('#inc1').onclick = () => bus.emit('count', 1);
+      $('#inc2').onclick = () => bus.emit('count', 2);
+      $('#reset').onclick = () => bus.emit('reset');
+
+      const update = (value) => {
+        count += value;
+        $('#counter').innerText = count;
+      };
+
+      bus.on('count', update);
+      bus.on('reset', () => {
+        count = 0;
+        update(0);
+      });
+    }
+
+    app();
+  </script>
+</body>
+</html>

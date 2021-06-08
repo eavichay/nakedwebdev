@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nakedWebDev: State</title>
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      div {
+        width: 100%;
+        padding: 1em;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+      }
+      body {
+        flex-direction: column;
+      }
+      label {
+        padding-right: 1em;
+      }
+      #outName, #outEmail {
+        padding: 0.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <div><label>Enter your name</label><input id="inpName" type="text" name="username" /></div>
+    <div>
+      <label>Enter your email</label><input id="inpEmail" type="email" name="email" />
+    </div>
+    <button id="submit">DONE</button>
+    <div>
+      Your name is <span id="outName"></span> and your email is
+      <span id="outEmail"></span>
+    </div>
+    <div id="log"></div>
+
+    <script type="module">
+      import { createState } from '../modules/state.js';
+
+      const $ = document.querySelector.bind(document);
+
+      // const {state, on} = createState({
+      //   nested: {
+      //     value: 42
+      //   }
+      // });
+      // const { state, on } = createState({
+      //   email: '',
+      //   name: ''
+      // });
+      const { state, on } = createState();
+
+      window.state = state;
+
+      $('#submit').onclick = () => {
+        state.name = $('#inpName').value;
+        state.email = $('#inpEmail').value;
+      };
+
+      on('name', value => $('#outName').innerText = value);
+      on('email', value => $('#outEmail').innerText = value);
+
+      on('change', ({key, value}) => {
+        $('#log').appendChild(document.createTextNode(`Change in [${key}] -> new value is [${value}]`));
+        $('#log').appendChild(document.createElement('br'));
+      });
+
+      // watch properties that do not exist!
+      on('nested.value', value => alert(value));
+      
+    </script>
+  </body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nakedWebDev: Dependency Injection</title>
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      user-info {
+        display: flex;
+        flex-direction: column;
+        padding: 1em;
+        border: 1px solid black;
+        border-radius: 0.5em;
+      }
+      body {
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+    <label>ID</label><input id="userId" type="text" /><button id="submit">Load</button>
+    </div>
+    <user-info></user-info>
+
+    <script type="module">
+      import { define, depInj } from '../modules/depinj.js';
+      const $ = document.querySelector.bind(document);
+
+      /**
+       * SERVICE
+       **/
+      class UserService {
+        async getUser(id = 1) {
+          const url = `https://jsonplaceholder.typicode.com/users/${id}`;
+          const r = await fetch(url);
+          return await r.json();
+        }
+      }
+
+      const userService = new UserService();
+      define('userService', () => userService);
+
+      /**
+       * App
+       */
+      $('#submit').onclick = () => {
+        const id = $('#userId').value;
+        if (id) {
+          $('user-info').setUserId(id);
+        }
+      };
+
+      // ui component with dependency injection
+      class UserComponent extends depInj(HTMLElement) {
+        static get inject() {
+          return ['userService'];
+        }
+
+        setUserId(value) {
+          this.dependencies.userService.getUser(value).then((userData) => {
+            this.userData = userData;
+            this.render();
+          });
+        }
+
+        render() {
+          if (this.userData) {
+            const { street, suite, city } = this.userData.address;
+            this.innerHTML = `
+            <div class="detail">Name: ${this.userData.name}</div>
+            <div class="detail">Email: ${this.userData.email}</div>
+            <div class="detail">Address: ${street}, ${suite}, ${city}</div>
+            <div class="detail">Phone: ${this.userData.phone}</div>
+            `;
+          } else {
+            this.innerHTML = '';
+          }
+        }
+      }
+      customElements.define('user-info', UserComponent);
+    </script>
+  </body>
+</html>

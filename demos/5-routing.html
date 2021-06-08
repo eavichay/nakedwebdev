@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.unpkg.com/slim-js@4.0.7/Slim.nomodule.js"></script>
+  <title>nakedWebDev: Routing</title>
+</head>
+<style>
+  body {
+    flex-direction: column;
+  }
+  body[theme="dark"] {
+    background-color: black;
+    color: white;
+  }
+  nav {
+    background: darkred;
+    color: white;
+    display: flex;
+    justify-content: space-evenly;
+  }
+  nav a {
+    color: inherit;
+  }
+</style>
+<body>
+  <nav onclick="return navigateTo(event)">
+    <a href="/home">HOME</a>
+    <a href="/settings">SETTINGS</a>
+    <a href="/login">LOGIN</a>
+    <a href="/invalid-path">INVALID PAGE</a>
+    <a href="/another-invalid-path">ANOTHER INVALID PAGE</a>
+  </nav>
+  <main>
+    <router-outlet path="/settings" component="settings-page"></router-outlet>
+    <router-outlet path="/login" component="login-page"></router-outlet>
+    <router-outlet path="/home" component="home-page"></router-outlet>
+    <router-outlet path="*" component="page-404"></router-outlet>
+  </main>
+
+  <script type="module">
+    import { router } from '../modules/router.js';
+
+    window.navigateTo = function(event) {
+      const { target } = event;
+      const to = target.getAttribute('href');
+      Promise.resolve().then(() => {
+        router.navigate(to);
+      });
+      return false;
+    }
+
+    router.init();
+    router.navigate('/home');
+
+
+    Slim.tag('page-404', `
+      <h1 style="color: red">Oops, Not found</h1>
+      <button click="gohome">Homepage</button>
+    `, class extends Slim{
+      gohome() {
+        router.navigate('/home');
+      }
+    });
+    Slim.tag('home-page', `<h1>Welcome<h1>`, class extends Slim{});
+    Slim.tag('settings-page', `
+      <h1>Settings<h1>
+      <label>Theme</label>
+      <select change="changeTheme">
+        <option value="Light">Light</option>
+        <option value="Dark">Dark</option>
+      </select>
+    `,
+    class extends Slim{
+      changeTheme(event) {
+        const {target} = event;
+        document.body.setAttribute('theme', target.value.toLowerCase());
+      }
+    });
+    Slim.tag('login-page', `
+      <h1>Login<h1>
+      <input s:id="usernameInput" type="text" placeholder="username">
+      <input type="password" placeholder="password">
+      <button click="doLogin">Login</button>
+    `, class extends Slim{
+      doLogin() {
+        alert(`Welcome, ${this.usernameInput.value}`);
+        router.navigate('/home');
+      }
+    });
+
+
+  </script>
+</body>
+</html>

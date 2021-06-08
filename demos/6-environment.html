@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta type="env"
+    data-target-deployment="production"
+    data-api-endpoint="https://randomuser.me/api"
+    data-version="3.7.1"
+    data-git-commit-hash="9186e6e1b47db5cbacbf8dd07e2b2d99958dd33c"
+    data-build="15736">
+  <title>nakedWebDev: Environment</title>
+  <link rel="stylesheet" href="./style.css" />
+  <style>
+    body {
+      flex-direction: column;
+      font-size: 120%;
+    }
+  </style>
+</head>
+<body>
+  <h4>These are the client-side runtime environent variables</h4>
+  <pre id="output"></pre>
+  <script type="module">
+    import { getEnv } from '../modules/env-vars.js'
+
+    const config = getEnv();
+    document.querySelector('#output').append(JSON.stringify(config, null, 4));
+  </script>
+</body>
+</html>
