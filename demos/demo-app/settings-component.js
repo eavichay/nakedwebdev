@@ -1,4 +1,6 @@
 import { Slim } from 'https://www.unpkg.com/slim-js@5.0.6/dist/index.js?module';
+import { depInj } from '../../modules/depinj.js';
+import SETTINGS_SERVICE from './settings-service.js';
 
 Slim.element(
   'settings-component',
@@ -14,18 +16,20 @@ Slim.element(
   </select>
   `,
 
-  class extends Slim {
+  class extends depInj(Slim) {
+    static inject = [SETTINGS_SERVICE];
+
+    get service() {
+      return this.dependencies[SETTINGS_SERVICE];
+    }
+
     constructor() {
       super();
-      this.currentTheme = document.body.getAttribute('theme');
-      if (!this.currentTheme) {
-        this.currentTheme = 'light';
-      }
+      this.currentTheme = this.service.getCurrentTheme();
     }
 
     updateTheme(value) {
-      this.currentTheme = value;
-      document.body.setAttribute('theme', this.currentTheme);
+      this.currentTheme = this.service.setTheme(value);
     }
   }
 );

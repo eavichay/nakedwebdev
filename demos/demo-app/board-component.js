@@ -58,7 +58,9 @@ Slim.element(
 
     createNewTask() {
       const title = prompt('Create new task', 'New Task');
-      this.dependencies[TASK_SERVICE].addTask(title);
+      if (title !== null) {
+        this.dependencies[TASK_SERVICE].addTask(title);
+      }
     }
   }
 );
