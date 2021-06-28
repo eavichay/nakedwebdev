@@ -1,8 +1,8 @@
 const registry = {};
 
 /**
- * 
- * @param {string} key 
+ *
+ * @param {string} key
  * @param {function} value factory function
  */
 export function define(key, value) {
@@ -21,9 +21,10 @@ export function depInj(Base) {
     constructor(...args) {
       super(...args);
       const inject = this.constructor.inject || []; // access to static property "inject";
-      inject.forEach(key => {
-        provide(this.dependencies = {}, key);
+      this.dependencies = this.dependencies || {};
+      inject.forEach((key) => {
+        provide(this.dependencies, key);
       });
     }
-  }
+  };
 }

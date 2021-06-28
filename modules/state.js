@@ -1,6 +1,6 @@
 import { eventBus } from './messaging.js';
 
-const tagged = new WeakSet();
+const tagged = new WeakMap();
 
 export function createState(target = {}, bus = eventBus(), prefix = '') {
   // primitives cannot have a proxy
@@ -13,7 +13,7 @@ export function createState(target = {}, bus = eventBus(), prefix = '') {
           // here is the key: If we get an object, we "proxify" it again, recursively
           const newValue = createState(value, bus, path);
 
-          // this weakset ensures an object is proxified once.
+          // this weakmap ensures an object is proxified once.
           // the usage of weak references allow the garbage collector to dispose unused objects that are not being watched
           if (tagged.has(value)) {
             t[key] = newValue.state;
@@ -30,7 +30,6 @@ export function createState(target = {}, bus = eventBus(), prefix = '') {
       },
     });
     // tag the dataset
-    tagged.add(target);
     Object.keys(target).forEach((key) => {
       const path = prefix ? prefix + '.' + key : key;
       let upgraded = createState(target[key], bus, path);
@@ -42,11 +41,14 @@ export function createState(target = {}, bus = eventBus(), prefix = '') {
       bus.emit('change', { key: path, value: upgraded });
     });
     // return as state
-    return {
+    const stateObj = {
       state: p,
       on: bus.on.bind(bus),
     };
+    tagged.set(target, stateObj);
+    tagged.set(p, stateObj);
+    return stateObj;
   }
   // return as-is, either already tagged state or primitive
-  return target;
+  return tagged.get(target) || target;
 }
